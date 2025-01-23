@@ -37,6 +37,7 @@ class DoipTp(iTp):
         self.__protocol_version = int(self.__config["DoIP"]["protocolVersion"], 16)
         self.__client_logical_address = int(self.__config["DoIP"]["clientLogicalAddress"], 16)
         self.__use_secure = self.__config["DoIP"]["useSecure"] == 'True'
+        self.__auto_reconnect_tcp = self.__config["DoIP"]["autoReconnectTCP"] == 'True'
 
         self.__connection = DoIPClient(
             self.__ecu_ip,
@@ -45,7 +46,8 @@ class DoipTp(iTp):
             activation_type=self.__activation_type,
             protocol_version=self.__protocol_version,
             client_logical_address=self.__client_logical_address,
-            use_secure=self.__use_secure)
+            use_secure=self.__use_secure,
+            auto_reconnect_tcp=self.__auto_reconnect_tcp)
 
     def send(self, payload, functionalReq=False):  # TODO: functionalReq not used???
         self.__connection.send_diagnostic(bytearray(payload))
@@ -96,3 +98,5 @@ class DoipTp(iTp):
             self.__config['DoIP']['clientLogicalAddress'] = hex(kwargs['client_logical_address'])
         if 'use_secure' in kwargs:
             self.__config['DoIP']['useSecure'] = 'True' if kwargs['use_secure'] else 'False'
+        if 'auto_reconnect_tcp' in kwargs:
+            self.__config['DoIP']['autoReconnectTCP'] = 'True' if kwargs['auto_reconnect_tcp'] else 'False'
